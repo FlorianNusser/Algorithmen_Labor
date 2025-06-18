@@ -1,3 +1,7 @@
+
+#ifndef TREE_TOOLS_HPP
+#define TREE_TOOLS_HPP
+
 #include <iostream>
 #include <queue>
 
@@ -97,3 +101,5 @@ private:
         return (level == 1) ? 0 : 2 * spaces(level - 1) + 1;
     }
 };
+
+#endif // TREE_TOOLS_HPP

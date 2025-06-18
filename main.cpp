@@ -15,12 +15,12 @@
 
 int main(){
 
-    Element e;
-    std::cout << "Element erstellt!" << std::endl;
+    //Element e;
+    //std::cout << "Element erstellt!" << std::endl;
 
     int wert = 42; // Beispielwert
-    Knoten k(&wert);
-    std::cout << "Knoten erstellt mit Wert: " << *(int*)k.inhalt << std::endl;
+    Knoten k(wert);
+    std::cout << "Knoten erstellt mit Wert: " << k.inhalt << std::endl;
 
     LinkedQueue queue;
     int a = 42, b = 17;
@@ -37,19 +37,19 @@ int main(){
     stack.push(&a);
     stack.push(&b);
 
-    std::cout << "Oberstes Element: " << *(int*)stack.topElement() << std::endl;
+    std::cout << "Oberstes Element: " << *(int*)stack.top() << std::endl;
     stack.pop();
-    std::cout << "Nach Pop oberstes Element: " << *(int*)stack.topElement() << std::endl;
+    std::cout << "Nach Pop oberstes Element: " << *(int*)stack.top() << std::endl;
 
     int c = 99;
 
-    LinkedTree leftTree(&a);
-    LinkedTree rightTree(&b);
-    LinkedTree tree(&leftTree, &c, &rightTree);
+    LinkedTree leftTree(a);
+    LinkedTree rightTree(b);
+    LinkedTree tree(&leftTree, c, &rightTree);
 
-    std::cout << "Wurzelwert: " << *(int*)tree.value() << std::endl;
-    std::cout << "Linker Teilbaum: " << *(int*)tree.left()->value() << std::endl;
-    std::cout << "Rechter Teilbaum: " << *(int*)tree.right()->value() << std::endl;
+    std::cout << "Wurzelwert: " << tree.value() << std::endl;
+    std::cout << "Linker Teilbaum: " << tree.left()->value() << std::endl;
+    std::cout << "Rechter Teilbaum: " << tree.right()->value() << std::endl;
 /*
     SearchTree tree;
     tree.insert(50);

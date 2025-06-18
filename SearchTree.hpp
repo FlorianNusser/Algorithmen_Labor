@@ -1,5 +1,8 @@
+#ifndef SEARCHTREE_HPP
+#define SEARCHTREE_HPP
 
 #include <iostream>
+#include "Knoten.hpp"
 
 // Implementierung eines binären Suchbaums
 class SearchTree {
@@ -98,3 +101,4 @@ public:
     }
 };
 
+#endif // SEARCHTREE_HPP

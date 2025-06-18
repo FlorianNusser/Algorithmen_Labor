@@ -1,14 +1,19 @@
+#ifndef KNOTEN_HPP
+#define KNOTEN_HPP
+
+
 #include <iostream>
 
 class Knoten {
 public:
-    void* inhalt;  // Inhalt des Knotens (ähnlich zu Java's Object)
+    int inhalt;  // Inhalt des Knotens (ähnlich zu Java's Object)
     Knoten* links; // Verweis auf den linken Teilbaum
     Knoten* rechts; // Verweis auf den rechten Teilbaum
 
     // Konstruktor zum Initialisieren des Knotens mit Inhalt
-    Knoten(void* x) : inhalt(x), links(nullptr), rechts(nullptr) {}
+    Knoten(int x) : inhalt(x), links(nullptr), rechts(nullptr) {}
 };
 
+#endif
 
 

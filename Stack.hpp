@@ -1,3 +1,6 @@
+#ifndef STACK_HPP
+#define STACK_HPP
+
 #include <iostream>
 
 class Stack {
@@ -10,3 +13,4 @@ public:
     virtual ~Stack() {} // Virtueller Destruktor für korrekte Speicherverwaltung
 };
 
+#endif // STACK_HPP

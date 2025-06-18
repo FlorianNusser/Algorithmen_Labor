@@ -1,4 +1,9 @@
+
+#ifndef LINKED_TREE_HPP
+#define LINKED_TREE_HPP
+
 #include <iostream>
+#include "Knoten.hpp"
 
 class LinkedTree {
 private:
@@ -9,12 +14,15 @@ public:
     LinkedTree() : wurzel(nullptr) {}
 
     // Konstruktor für ein Blatt
-    LinkedTree(void* x) {
+    LinkedTree(int x) {
         wurzel = new Knoten(x);
     }
 
+    // Neuer Konstruktor für internen Gebrauch (aus Knoten*)
+    LinkedTree(Knoten* k) : wurzel(k) {}
+
     // Konstruktor für einen Baum mit linken und rechten Teilbaum
-    LinkedTree(LinkedTree* l, void* x, LinkedTree* r) {
+    LinkedTree(LinkedTree* l, int x, LinkedTree* r) {
         wurzel = new Knoten(x);
         if (l != nullptr) wurzel->links = l->wurzel;
         if (r != nullptr) wurzel->rechts = r->wurzel;
@@ -28,20 +36,20 @@ public:
     // Gibt das Element in der Wurzel zurück
     void* value() const {
         if (empty()) throw std::runtime_error("Baum ist leer");
-        return wurzel->inhalt;
+        return (void*)(intptr_t)wurzel->inhalt;
     }
 
     // Gibt den linken Teilbaum zurück
     LinkedTree* left() const {
         if (empty()) throw std::runtime_error("Baum ist leer");
-        return new LinkedTree(wurzel->links);
+        return wurzel->links ? new LinkedTree(wurzel->links) : new LinkedTree();
     }
 
     // Gibt den rechten Teilbaum zurück
     LinkedTree* right() const {
         if (empty()) throw std::runtime_error("Baum ist leer");
-        return new LinkedTree(wurzel->rechts);
+        return wurzel->rechts ? new LinkedTree(wurzel->rechts) : new LinkedTree();
     }
 };
 
-
+#endif // LINKED_TREE_HPP

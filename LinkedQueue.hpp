@@ -1,3 +1,6 @@
+#ifndef LINKED_QUEUE_HPP
+#define LINKED_QUEUE_HPP
+
 #include <iostream>
 #include "Element.hpp"
 
@@ -47,4 +50,4 @@ public:
 };
 
 
-
+#endif

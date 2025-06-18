@@ -1,3 +1,6 @@
+#ifndef TREE_HPP
+#define TREE_HPP
+
 #include <iostream>
 
 class Tree {
@@ -9,3 +12,5 @@ public:
 
     virtual ~Tree() {} // Virtueller Destruktor für korrekte Speicherverwaltung
 };
+
+#endif // TREE_HPP

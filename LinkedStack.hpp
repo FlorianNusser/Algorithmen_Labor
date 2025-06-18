@@ -1,35 +1,41 @@
+#ifndef LINKED_STACK_HPP
+#define LINKED_STACK_HPP
+
 #include <iostream>
+#include "Element.hpp"
+
 
 class LinkedStack {
 private:
-    Element* top; // Verweist auf das oberste Stack-Element
+    Element* topElem; // Verweist auf das oberste Stack-Element
 
 public:
-    LinkedStack() : top(nullptr) {}
+    LinkedStack() : topElem(nullptr) {}
 
     bool empty() const {
-        return top == nullptr;
+        return topElem == nullptr;
     }
 
     void push(void* x) {
         Element* hilf = new Element(x);
-        hilf->next = top;
-        top = hilf;
+        hilf->next = topElem;
+        topElem = hilf;
     }
 
-    void* topElement() const {
+    void* top() const {
         if (empty()) {
             throw std::runtime_error("Stack ist leer");
         }
-        return top->inhalt;
+        return topElem->inhalt;
     }
 
     void pop() {
         if (empty()) {
             throw std::runtime_error("Stack ist leer");
         }
-        Element* temp = top;
-        top = top->next;
+        Element* temp = topElem;
+        topElem = topElem->next;
         delete temp; // Speicher freigeben
     }
 };
+#endif // LINKED_STACK_HPP
