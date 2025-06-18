@@ -50,18 +50,18 @@ int main(){
     std::cout << "Wurzelwert: " << tree.value() << std::endl;
     std::cout << "Linker Teilbaum: " << tree.left()->value() << std::endl;
     std::cout << "Rechter Teilbaum: " << tree.right()->value() << std::endl;
-/*
-    SearchTree tree;
-    tree.insert(50);
-    tree.insert(30);
-    tree.insert(70);
-    tree.insert(20);
-    tree.insert(40);
 
-    std::cout << "Suche nach 40: " << (tree.lookup(40) != nullptr ? "Gefunden" : "Nicht gefunden") << std::endl;
-    tree.deleteValue(40);
-    std::cout << "Suche nach 40 nach Löschung: " << (tree.lookup(40) != nullptr ? "Gefunden" : "Nicht gefunden") << std::endl;
-*/
+    SearchTree search_tree;
+    search_tree.insert(50);
+    search_tree.insert(30);
+    search_tree.insert(70);
+    search_tree.insert(20);
+    search_tree.insert(40);
+
+    std::cout << "Suche nach 40: " << (search_tree.lookup(40) != nullptr ? "Gefunden" : "Nicht gefunden") << std::endl;
+    search_tree.deleteValue(40);
+    std::cout << "Suche nach 40 nach Löschung: " << (search_tree.lookup(40) != nullptr ? "Gefunden" : "Nicht gefunden") << std::endl;
+
 
 /*
     // Erzeuge einen Test-Baum
