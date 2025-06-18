@@ -33,8 +33,7 @@ int main(){
     std::cout << "Nach Deq erstes Element: " << *(int*)queue.front() << std::endl;
 
     LinkedStack stack;
-    int a = 42, b = 17;
-
+    
     stack.push(&a);
     stack.push(&b);
 
@@ -42,7 +41,7 @@ int main(){
     stack.pop();
     std::cout << "Nach Pop oberstes Element: " << *(int*)stack.topElement() << std::endl;
 
-        int a = 42, b = 17, c = 99;
+    int c = 99;
 
     LinkedTree leftTree(&a);
     LinkedTree rightTree(&b);
@@ -52,7 +51,7 @@ int main(){
     std::cout << "Linker Teilbaum: " << *(int*)tree.left()->value() << std::endl;
     std::cout << "Rechter Teilbaum: " << *(int*)tree.right()->value() << std::endl;
 
-        SearchTree tree;
+    SearchTree tree;
     tree.insert(50);
     tree.insert(30);
     tree.insert(70);
@@ -75,7 +74,7 @@ int main(){
     LinkedTree* d = new LinkedTree(p, '/', n);
 
     // Test treeHeight() und anzahlKnoten()
-    std::cout << "Baumhoehe laut Methode (sollte 4 sein): " 
+    std::cout << "Baumhoehe laut Methode (sollte 4 sein): "
               << TreeTools::treeHeight(d) << std::endl;
 
     std::cout << "Anzahl Knoten laut Methode (sollte 9 sein): "
