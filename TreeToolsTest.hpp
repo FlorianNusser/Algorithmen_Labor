@@ -66,39 +66,3 @@ public:
     }
 };
 
-int main() {
-    // Erzeuge einen Test-Baum
-    LinkedTree* a = new LinkedTree('A');
-    LinkedTree* b = new LinkedTree('B');
-    LinkedTree* m = new LinkedTree(a, '*', b);
-    LinkedTree* f = new LinkedTree('F');
-    LinkedTree* p = new LinkedTree(f, '+', m);
-    LinkedTree* x = new LinkedTree('X');
-    LinkedTree* y = new LinkedTree('Y');
-    LinkedTree* n = new LinkedTree(x, '-', y);
-    LinkedTree* d = new LinkedTree(p, '/', n);
-
-    // Test treeHeight() und anzahlKnoten()
-    std::cout << "Baumhoehe laut Methode (sollte 4 sein): " 
-              << TreeTools::treeHeight(d) << std::endl;
-
-    std::cout << "Anzahl Knoten laut Methode (sollte 9 sein): "
-              << TreeTools::anzahlKnoten(d) << std::endl;
-
-    std::cout << "Ausdruck mit Klammerung: ";
-    TreeTools::printTreeInorderWithParenthesis(d);
-    std::cout << std::endl;
-
-    // Speicherfreigabe (für vollständige Implementierung erforderlich)
-    delete a;
-    delete b;
-    delete m;
-    delete f;
-    delete p;
-    delete x;
-    delete y;
-    delete n;
-    delete d;
-
-    return 0;
-}

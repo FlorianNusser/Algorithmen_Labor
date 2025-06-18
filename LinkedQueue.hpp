@@ -53,17 +53,5 @@ public:
     }
 };
 
-int main() {
-    LinkedQueue queue;
-    int a = 42, b = 17;
 
-    queue.enq(&a);
-    queue.enq(&b);
-
-    std::cout << "Erstes Element: " << *(int*)queue.front() << std::endl;
-    queue.deq();
-    std::cout << "Nach Deq erstes Element: " << *(int*)queue.front() << std::endl;
-
-    return 0;
-}
 

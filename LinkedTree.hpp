@@ -54,16 +54,4 @@ public:
     }
 };
 
-int main() {
-    int a = 42, b = 17, c = 99;
 
-    LinkedTree leftTree(&a);
-    LinkedTree rightTree(&b);
-    LinkedTree tree(&leftTree, &c, &rightTree);
-
-    std::cout << "Wurzelwert: " << *(int*)tree.value() << std::endl;
-    std::cout << "Linker Teilbaum: " << *(int*)tree.left()->value() << std::endl;
-    std::cout << "Rechter Teilbaum: " << *(int*)tree.right()->value() << std::endl;
-
-    return 0;
-}

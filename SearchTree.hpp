@@ -109,17 +109,3 @@ public:
     }
 };
 
-int main() {
-    SearchTree tree;
-    tree.insert(50);
-    tree.insert(30);
-    tree.insert(70);
-    tree.insert(20);
-    tree.insert(40);
-
-    std::cout << "Suche nach 40: " << (tree.lookup(40) != nullptr ? "Gefunden" : "Nicht gefunden") << std::endl;
-    tree.deleteValue(40);
-    std::cout << "Suche nach 40 nach Löschung: " << (tree.lookup(40) != nullptr ? "Gefunden" : "Nicht gefunden") << std::endl;
-
-    return 0;
-}

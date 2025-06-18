@@ -8,9 +8,5 @@ public:
     Element() : inhalt(nullptr), next(nullptr) {}
 };
 
-int main() {
-    Element e;
-    std::cout << "Element erstellt!" << std::endl;
-    return 0;
-}
+
 
