@@ -1,15 +1,5 @@
 #include <iostream>
 
-class Knoten {
-public:
-    void* inhalt;  // Generischer Inhalt des Knotens
-    Knoten* links; // Zeiger auf den linken Teilbaum
-    Knoten* rechts; // Zeiger auf den rechten Teilbaum
-
-    // Konstruktor für einen Knoten mit Inhalt
-    Knoten(void* x) : inhalt(x), links(nullptr), rechts(nullptr) {}
-};
-
 class LinkedTree {
 private:
     Knoten* wurzel; // Wurzel des Baums

@@ -11,7 +11,7 @@
 #include "Stack.hpp"
 #include "Tree.hpp"
 #include "TreeTools.hpp"
-#include "TreeToolsTest.hpp"
+//#include "TreeToolsTest.hpp"
 
 int main(){
 
@@ -50,7 +50,7 @@ int main(){
     std::cout << "Wurzelwert: " << *(int*)tree.value() << std::endl;
     std::cout << "Linker Teilbaum: " << *(int*)tree.left()->value() << std::endl;
     std::cout << "Rechter Teilbaum: " << *(int*)tree.right()->value() << std::endl;
-
+/*
     SearchTree tree;
     tree.insert(50);
     tree.insert(30);
@@ -61,8 +61,10 @@ int main(){
     std::cout << "Suche nach 40: " << (tree.lookup(40) != nullptr ? "Gefunden" : "Nicht gefunden") << std::endl;
     tree.deleteValue(40);
     std::cout << "Suche nach 40 nach Löschung: " << (tree.lookup(40) != nullptr ? "Gefunden" : "Nicht gefunden") << std::endl;
+*/
 
-        // Erzeuge einen Test-Baum
+/*
+    // Erzeuge einen Test-Baum
     LinkedTree* a = new LinkedTree('A');
     LinkedTree* b = new LinkedTree('B');
     LinkedTree* m = new LinkedTree(a, '*', b);
@@ -94,6 +96,6 @@ int main(){
     delete y;
     delete n;
     delete d;
-
+*/
     return 0;
 }

@@ -1,13 +1,5 @@
 #include <iostream>
 
-class Element {
-public:
-    void* inhalt;  // Generischer Inhalt des Elements
-    Element* next; // Zeiger auf das nächste Element
-
-    Element(void* data) : inhalt(data), next(nullptr) {}
-};
-
 class LinkedStack {
 private:
     Element* top; // Verweist auf das oberste Stack-Element
@@ -41,17 +33,3 @@ public:
         delete temp; // Speicher freigeben
     }
 };
-
-int main() {
-    LinkedStack stack;
-    int a = 42, b = 17;
-
-    stack.push(&a);
-    stack.push(&b);
-
-    std::cout << "Oberstes Element: " << *(int*)stack.topElement() << std::endl;
-    stack.pop();
-    std::cout << "Nach Pop oberstes Element: " << *(int*)stack.topElement() << std::endl;
-
-    return 0;
-}

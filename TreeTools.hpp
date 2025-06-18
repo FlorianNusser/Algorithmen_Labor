@@ -1,16 +1,6 @@
 #include <iostream>
 #include <queue>
 
-// Interface für einen generischen Baum
-class Tree {
-public:
-    virtual bool empty() const = 0; // Prüft, ob der Baum leer ist
-    virtual Tree* left() const = 0; // Gibt den linken Teilbaum zurück
-    virtual Tree* right() const = 0; // Gibt den rechten Teilbaum zurück
-    virtual int value() const = 0; // Gibt das Wurzel-Element zurück
-
-    virtual ~Tree() {} // Virtueller Destruktor
-};
 
 // Hilfsklasse mit Baum-Algorithmen
 class TreeTools {

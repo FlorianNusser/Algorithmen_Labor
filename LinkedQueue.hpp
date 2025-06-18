@@ -1,12 +1,5 @@
 #include <iostream>
-
-class Element {
-public:
-    void* inhalt;  // Inhalt des Elements (generischer Typ)
-    Element* next; // Verweis auf das nächste Element
-
-    Element(void* data) : inhalt(data), next(nullptr) {}
-};
+#include "Element.hpp"
 
 class LinkedQueue {
 private:

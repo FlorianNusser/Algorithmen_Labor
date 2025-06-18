@@ -1,17 +1,6 @@
 
 #include <iostream>
 
-// Klasse für Knoten im Baum
-class Knoten {
-public:
-    int inhalt;      // Inhalt des Knotens
-    Knoten* links;   // Zeiger auf linken Teilbaum
-    Knoten* rechts;  // Zeiger auf rechten Teilbaum
-
-    // Konstruktor für einen neuen Knoten
-    Knoten(int x) : inhalt(x), links(nullptr), rechts(nullptr) {}
-};
-
 // Implementierung eines binären Suchbaums
 class SearchTree {
 private:

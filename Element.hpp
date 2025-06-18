@@ -5,7 +5,8 @@ public:
     void* inhalt;  // Inhalt des Elements (ähnlich zu Java's Object)
     Element* next; // Verweis auf das nächste Element
     
-    Element() : inhalt(nullptr), next(nullptr) {}
+    Element(void* data) : inhalt(nullptr), next(nullptr) {}
+
 };
 
 
