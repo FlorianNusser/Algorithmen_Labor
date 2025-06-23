@@ -35,8 +35,8 @@ struct Knoten {
 
 class LinkedQueue {
 private:
-    Element* head; // Zeiger auf Anfang der Queue
-    Element* tail; // Zeiger auf Ende der Queue
+    Element* head; // Zeiger auf Anfang der Queue (Vorderstes Element)
+    Element* tail; // Zeiger auf Ende der Queue (Letztes Element)
 
 public:
     LinkedQueue() : head(nullptr), tail(nullptr) {}
@@ -45,6 +45,7 @@ public:
         return head == nullptr;
     }
 
+    // Fügt ein neues Element am Ende hinzu
     void enq(void* x) {
         if (empty()) {
             tail = head = new Element();
@@ -56,16 +57,18 @@ public:
         tail->next = nullptr;
     }
 
+    // Entfernt das vorderste Element
     void deq() {
         if (empty())
             throw std::runtime_error("deq: Queue ist leer");
         Element* temp = head;
         head = head->next;
         if (head == nullptr)
-            tail = nullptr;
+            tail = nullptr; // falls letztes Element entfernt wurde
         delete temp;
     }
 
+    // Gibt Inhalt des vordersten Elements zurück
     void* front() {
         if (empty())
             throw std::runtime_error("front: Queue ist leer");
@@ -75,7 +78,7 @@ public:
 
 
 /*************************** LinkedStack.h *******************************/
-// Implementierung eines Stacks mit Zeigern
+// Implementierung eines verketteten Stacks mit Zeigern
 
 
 
@@ -90,6 +93,7 @@ public:
         return top == nullptr;
     }
 
+    // Fügt ein neues Element oben auf den Stack
     void push(void* x) {
         Element* neu = new Element();
         neu->inhalt = x;
@@ -97,12 +101,14 @@ public:
         top = neu;
     }
 
+    // Gibt das oberste Element zurück (ohne Entfernen)
     void* peek() {
         if (empty())
             throw std::runtime_error("Stack ist leer");
         return top->inhalt;
     }
 
+    // Entfernt das oberste Element
     void pop() {
         if (empty())
             throw std::runtime_error("Stack ist leer");
@@ -127,15 +133,19 @@ public:
     virtual ~Tree() {}
 };
 
+// Konkrete Implementierung des Baumes
 class LinkedTree : public Tree {
 protected:
     Knoten* wurzel;
 
-    LinkedTree(Knoten* k) : wurzel(k) {} // Nur intern genutzt
+    // interner Konstruktor (z.B. für left()/right())
+    LinkedTree(Knoten* k) : wurzel(k) {}
 
 public:
     LinkedTree() : wurzel(nullptr) {}
     LinkedTree(void* x) : wurzel(new Knoten(x)) {}
+
+    // Konstruktor mit linken & rechten Teilbaum
     LinkedTree(LinkedTree* l, void* x, LinkedTree* r) {
         wurzel = new Knoten(x);
         if (l) wurzel->links = l->wurzel;
@@ -165,36 +175,38 @@ public:
 
 class SearchTree : public LinkedTree {
 private:
-    // Gibt den Knoten mit dem größten char-Wert zurück
+    // Gibt den Knoten mit dem größten char-Wert im Teilbaum t zurück
     Knoten* findMax(Knoten* t) {
-        while (t->rechts != nullptr)
+        while (t->rechts != nullptr) // geht so weit wie möglich nach rechts
             t = t->rechts;
         return t;
     }
 
     // Hilfsmethode zum Vergleich von char-Pointern
     int compareChars(void* a, void* b) {
-        return *(char*)a - *(char*)b;
+        return *(char*)a - *(char*)b; // lexikografischer Vergleich
     }
 
 public:
+    // Sucht ein Element mit dem Wert x (char*) im Suchbaum
     void* lookup(char* x) {
         Knoten* k = wurzel;
         while (k != nullptr) {
             int cmp = compareChars(x, k->inhalt);
             if (cmp < 0)
-                k = k->links;
+                k = k->links; // links weiter suchen
             else if (cmp > 0)
-                k = k->rechts;
+                k = k->rechts; // rechts weiter suchen
             else
-                return k->inhalt;
+                return k->inhalt; // gefunden
         }
-        return nullptr;
+        return nullptr; // nicht gefunden
     }
 
+    // Füht ein neues Element x ein, falls es noch nicht existiert
     bool insert(char* x) {
         if (wurzel == nullptr) {
-            wurzel = new Knoten(x);
+            wurzel = new Knoten(x); // neuer Wurzelknoten
             return true;
         }
 
@@ -212,6 +224,7 @@ public:
                 return false; // Schon vorhanden
         }
 
+        // Neuen Knoten als Kind des gefundenen "Vaters" eingefügen
         if (compareChars(x, vater->inhalt) < 0)
             vater->links = new Knoten(x);
         else
@@ -219,10 +232,12 @@ public:
         return true;
     }
 
+    // Löscht das Element mit dem Wert x aus dem Baum
     bool deleteNode(char* x) {
         Knoten* vater = nullptr;
         Knoten* sohn = wurzel;
 
+        // Suche nach dem zu löschenden Knoten
         while (sohn != nullptr && compareChars(x, sohn->inhalt) != 0) {
             vater = sohn;
             if (compareChars(x, sohn->inhalt) < 0)
@@ -231,6 +246,7 @@ public:
                 sohn = sohn->rechts;
         }
 
+        // Fall: nur ein Kind oder kein Kind
         if (sohn != nullptr) {
             Knoten* ersatzKnoten;
             if (sohn->links == nullptr)
@@ -238,13 +254,15 @@ public:
             else if (sohn->rechts == nullptr)
                 ersatzKnoten = sohn->links;
             else {
+                // Zwei Kinder: FInde größtes Element im linken Teilbaum
                 ersatzKnoten = sohn;
                 char* tmp = (char*)findMax(sohn->links)->inhalt;
-                deleteNode(tmp);
-                ersatzKnoten->inhalt = tmp;
+                deleteNode(tmp); // rekursiv löschen
+                ersatzKnoten->inhalt = tmp; // Wert ersetzen
                 return true;
             }
 
+            // Zeiger des Elternknotens anpassen
             if (vater == nullptr)
                 wurzel = ersatzKnoten;
             else if (compareChars(x, vater->inhalt) < 0)
@@ -252,11 +270,11 @@ public:
             else
                 vater->rechts = ersatzKnoten;
 
-            delete sohn;
+            delete sohn; // alten Knoten freigeben
             return true;
         }
 
-        return false;
+        return false; // Element nicht gefunden
     }
 };
 
@@ -266,18 +284,21 @@ public:
 
 class TreeTools {
 public:
+    // Berechnet die Höhe des Baums
     static int treeHeight(Tree* b) {
         if (b == nullptr || b->empty())
             return 0;
         return 1 + std::max(treeHeight(b->left()), treeHeight(b->right()));
     }
 
+    // Zählt die Anzahl aller Knoten im Baum
     static int anzahlKnoten(Tree* b) {
         if (b == nullptr || b->empty())
             return 0;
         return 1 + anzahlKnoten(b->left()) + anzahlKnoten(b->right());
     }
 
+    // Gibt den Baum in Inorder-Notation mit Klammern aus
     static void printTreeInorderWithParenthesis(Tree* b) {
         if (b == nullptr || b->empty())
             return;
@@ -288,7 +309,7 @@ public:
         printTreeInorderWithParenthesis(b->right());
         std::cout << ")";
     }
-
+    // Levelorder-Ausgabe (Breitensuche)
     static void printTreeLevelorder(Tree* b) {
         if (b == nullptr || b->empty())
             return;
@@ -320,6 +341,7 @@ public:
         return nullptr;
     }
 
+    // Baum als Level-Ausgabe (grafisch)
     static void printTree(Tree* b) {
         int resthoehe = treeHeight(b);
         for (int i = 0; i < resthoehe; i++) {
@@ -364,14 +386,23 @@ int main() {
     //     / \
     //    A   B
 
+    // Blattknoten
     LinkedTree* a = new LinkedTree(new char('A'));
     LinkedTree* b = new LinkedTree(new char('B'));
+
+    // Teilbaum * mit A und B
     LinkedTree* m = new LinkedTree(a, new char('*'), b);
+
+    // linkwe Teilbaum: + mit F und +
     LinkedTree* f = new LinkedTree(new char('F'));
     LinkedTree* p = new LinkedTree(f, new char('+'), m);
+
+    // rechter Teilbaum: - mit X und Y
     LinkedTree* x = new LinkedTree(new char('X'));
     LinkedTree* y = new LinkedTree(new char('Y'));
     LinkedTree* n = new LinkedTree(x, new char('-'), y);
+
+    // Wurzelbaum mit /
     LinkedTree* d = new LinkedTree(p, new char('/'), n);
 
     std::cout << "Baumstruktur (Inorder mit Klammern):" << std::endl;

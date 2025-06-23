@@ -1,0 +1,35 @@
+# Ignore VS Code folder
+.vscode/
+
+# Optional: build directory (falls du CMake o. Ä. verwendest)
+build/
+**/build/
+
+# macOS spezifische Dateien
+.DS_Store
+
+# Windows spezifische Dateien
+Thumbs.db
+
+# CLion / CMake IDEs (falls mal verwendet)
+cmake-build-*/
+
+# Backup-Dateien
+*.bak
+*~
+
+# Editor-spezifisch
+*.swp
+*.swo
+
+# Binärdateien oder Debug-Outputs
+*.out
+*.exe
+*.obj
+*.o
+*.a
+*.so
+*.dll
+
+# Logs
+*.log
