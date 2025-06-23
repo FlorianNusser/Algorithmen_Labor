@@ -2,14 +2,16 @@
 #include <string>
 #include <stdexcept>
 #include <queue>
+#include <memory>
 
 
 
 /******************************* Element.h ********************************/
 // Element für LinkedQueue und LinkedStack
 
+template <typename T>
 struct Element {
-    void* inhalt;       // Inhalt des Elements
+    T inhalt;       // Inhalt des Elements
     Element* next;      // Zeiger auf das nächste Element
 };
 
@@ -17,26 +19,25 @@ struct Element {
 /****************************** Knoten.h *********************************/
 // Knotenstruktur für Bäume mit Konstruktor
 
+template<typename T>
 struct Knoten {
-    void* inhalt;       // Inhalt des Knotens
-    Knoten* links;      // linker Teilbaum
-    Knoten* rechts;     // rechter Teilbaum
+    std::shared_ptr<T> inhalt; // Inhalt des Knotens mit smart pointer
+    std::shared_ptr<Knoten<T>> links; // linker Teilbaum
+    std::shared_ptr<Knoten<T>> rechts; // rechter Teilbaum
 
-    Knoten(void* x) {
-        inhalt = x;
-        links = rechts = nullptr;
-    }
+    Knoten(std::shared_ptr<T> x) : inhalt(x), links(nullptr), rechts(nullptr) {} // Angepasst an smart pointer
 };
+
 
 
 /*************************** LinkedQueue.h *******************************/
 // Implementierung einer Queue mit Zeigern
 
-
+template <typename T>
 class LinkedQueue {
 private:
-    Element* head; // Zeiger auf Anfang der Queue (Vorderstes Element)
-    Element* tail; // Zeiger auf Ende der Queue (Letztes Element)
+    Element<T>* head; // Zeiger auf Anfang der Queue (Vorderstes Element)
+    Element<T>* tail; // Zeiger auf Ende der Queue (Letztes Element)
 
 public:
     LinkedQueue() : head(nullptr), tail(nullptr) {}
@@ -46,11 +47,11 @@ public:
     }
 
     // Fügt ein neues Element am Ende hinzu
-    void enq(void* x) {
+    void enq(T x) {
         if (empty()) {
-            tail = head = new Element();
+            tail = head = new Element<T>();
         } else {
-            tail->next = new Element();
+            tail->next = new Element<T>();
             tail = tail->next;
         }
         tail->inhalt = x;
@@ -69,7 +70,7 @@ public:
     }
 
     // Gibt Inhalt des vordersten Elements zurück
-    void* front() {
+    T front() {
         if (empty())
             throw std::runtime_error("front: Queue ist leer");
         return head->inhalt;
@@ -81,28 +82,26 @@ public:
 // Implementierung eines verketteten Stacks mit Zeigern
 
 
-
+template <typename T>
 class LinkedStack {
 private:
-    Element* top; // Zeiger auf oberstes Element
+    Element<T>* top; // Zeiger auf oberstes Element
 
 public:
     LinkedStack() : top(nullptr) {}
 
-    bool empty() {
+    bool empty() const {
         return top == nullptr;
     }
 
     // Fügt ein neues Element oben auf den Stack
-    void push(void* x) {
-        Element* neu = new Element();
-        neu->inhalt = x;
-        neu->next = top;
+    void push(T x) {
+        Element<T>* neu = new Element<T>{x, top};
         top = neu;
     }
 
     // Gibt das oberste Element zurück (ohne Entfernen)
-    void* peek() {
+    T peek() {
         if (empty())
             throw std::runtime_error("Stack ist leer");
         return top->inhalt;
@@ -112,7 +111,7 @@ public:
     void pop() {
         if (empty())
             throw std::runtime_error("Stack ist leer");
-        Element* temp = top;
+        Element<T>* temp = top;
         top = top->next;
         delete temp;
     }
@@ -122,32 +121,33 @@ public:
 /**************************** LinkedTree.h *******************************/
 // Baumklasse mit Konstruktoren und Methoden
 
-class LinkedTree;
-
+template <typename T>
 class Tree {
 public:
     virtual bool empty() = 0;
-    virtual Tree* left() = 0;
-    virtual Tree* right() = 0;
-    virtual void* value() = 0;
+    virtual Tree<T>* left() = 0;
+    virtual Tree<T>* right() = 0;
+    virtual T value() = 0;
     virtual ~Tree() {}
 };
 
 // Konkrete Implementierung des Baumes
-class LinkedTree : public Tree {
+template <typename T>
+class LinkedTree : public Tree<T> {
 protected:
-    Knoten* wurzel;
+    std::shared_ptr<Knoten<T>> wurzel;
 
     // interner Konstruktor (z.B. für left()/right())
-    LinkedTree(Knoten* k) : wurzel(k) {}
+    LinkedTree(std::shared_ptr<Knoten<T>> k) : wurzel(k) {}
 
 public:
     LinkedTree() : wurzel(nullptr) {}
-    LinkedTree(void* x) : wurzel(new Knoten(x)) {}
+    LinkedTree(T x) { auto inhaltPtr = std::make_shared<T>(x); wurzel = std::make_shared<Knoten<T>>(inhaltPtr);} // Angepasst an smart pointer
 
     // Konstruktor mit linken & rechten Teilbaum
-    LinkedTree(LinkedTree* l, void* x, LinkedTree* r) {
-        wurzel = new Knoten(x);
+    LinkedTree(LinkedTree<T>* l, T x, LinkedTree<T>* r) {
+        auto inhaltPtr = std::make_shared<T>(x);
+        wurzel = std::make_shared<Knoten<T>>(inhaltPtr); 
         if (l) wurzel->links = l->wurzel;
         if (r) wurzel->rechts = r->wurzel;
     }
@@ -156,30 +156,43 @@ public:
         return wurzel == nullptr;
     }
 
-    void* value() override {
+    T value() override {
         if (empty()) throw std::runtime_error("Baum ist leer");
-        return wurzel->inhalt;
+        return *(wurzel->inhalt); // Angepasst an smart pointer
     }
 
-    Tree* left() override {
+    Tree<T>* left() override {
         if (empty()) throw std::runtime_error("Baum ist leer");
-        return new LinkedTree(wurzel->links);
+        return new LinkedTree<T>(wurzel->links);
     }
 
-    Tree* right() override {
+    Tree<T>* right() override {
         if (empty()) throw std::runtime_error("Baum ist leer");
-        return new LinkedTree(wurzel->rechts);
+        return new LinkedTree<T>(wurzel->rechts);
     }
+    /* würde delete ersetzen: ~LinkedTree() {
+    if (wurzel != nullptr) {
+        LinkedTree* l = new LinkedTree(wurzel->links);
+        LinkedTree* r = new LinkedTree(wurzel->rechts);
+        delete l;
+        delete r;
+        delete wurzel;
+    } 
+} */
+
 };
 
-
-class SearchTree : public LinkedTree {
+template <typename T, typename Compare = std::less<T>>
+class SearchTree : public LinkedTree<T> {
 private:
     // Gibt den Knoten mit dem größten char-Wert im Teilbaum t zurück
-    Knoten* findMax(Knoten* t) {
-        while (t->rechts != nullptr) // geht so weit wie möglich nach rechts
-            t = t->rechts;
-        return t;
+    using LinkedTree<T>::wurzel;
+    Compare comp;
+
+    std::shared_ptr<Knoten<T>> findMax(std::shared_ptr<Knoten<T>> node) {
+        while (node->rechts) // geht so weit wie möglich nach rechts
+            node = node->rechts;
+        return node;
     }
 
     // Hilfsmethode zum Vergleich von char-Pointern
@@ -187,60 +200,61 @@ private:
         return *(char*)a - *(char*)b; // lexikografischer Vergleich
     }
 
+
 public:
     // Sucht ein Element mit dem Wert x (char*) im Suchbaum
-    void* lookup(char* x) {
-        Knoten* k = wurzel;
-        while (k != nullptr) {
-            int cmp = compareChars(x, k->inhalt);
-            if (cmp < 0)
-                k = k->links; // links weiter suchen
-            else if (cmp > 0)
-                k = k->rechts; // rechts weiter suchen
+    T* lookup(T x) {
+        auto node = wurzel;
+        while (node) {
+            if (comp(x, *(node->inhalt)))
+                node = node->links; // links weiter suchen
+            else if (comp(*(node->inhalt), x))
+                node = node->rechts; // rechts weiter suchen
             else
-                return k->inhalt; // gefunden
+                return node->inhalt.get(); // gefunden
         }
         return nullptr; // nicht gefunden
     }
 
     // Füht ein neues Element x ein, falls es noch nicht existiert
-    bool insert(char* x) {
-        if (wurzel == nullptr) {
-            wurzel = new Knoten(x); // neuer Wurzelknoten
+    bool insert(T x) {
+        auto neu = std::make_shared<T>(x); 
+        if (!wurzel) {
+            wurzel = std::make_shared<Knoten<T>>(neu); // neuer Wurzelknoten
             return true;
         }
 
-        Knoten* vater = nullptr;
-        Knoten* k = wurzel;
+        std::shared_ptr<Knoten<T>> vater = nullptr;
+        auto current = wurzel;
 
-        while (k != nullptr) {
-            vater = k;
-            int cmp = compareChars(x, k->inhalt);
-            if (cmp < 0)
-                k = k->links;
-            else if (cmp > 0)
-                k = k->rechts;
+        while (current) {
+            vater = current;
+            if (comp(x, *(current->inhalt)))
+                current = current->links;
+            else if (comp(*(current->inhalt), x))
+                current = current->rechts;
             else
                 return false; // Schon vorhanden
         }
 
         // Neuen Knoten als Kind des gefundenen "Vaters" eingefügen
-        if (compareChars(x, vater->inhalt) < 0)
-            vater->links = new Knoten(x);
+        if (comp(x, *(vater->inhalt)))
+            vater->links = std::make_shared<Knoten<T>>(neu);
         else
-            vater->rechts = new Knoten(x);
+            vater->rechts = std::make_shared<Knoten<T>>(neu);
         return true;
     }
 
     // Löscht das Element mit dem Wert x aus dem Baum
     bool deleteNode(char* x) {
-        Knoten* vater = nullptr;
-        Knoten* sohn = wurzel;
+        Knoten<T>* vater = nullptr;
+        Knoten<T>* sohn = wurzel;
+
 
         // Suche nach dem zu löschenden Knoten
-        while (sohn != nullptr && compareChars(x, sohn->inhalt) != 0) {
+        while (sohn != nullptr && compareChars(x, sohn->inhalt.get()) != 0) {
             vater = sohn;
-            if (compareChars(x, sohn->inhalt) < 0)
+            if (compareChars(x, sohn->inhalt.get()) < 0)
                 sohn = sohn->links;
             else
                 sohn = sohn->rechts;
@@ -248,7 +262,7 @@ public:
 
         // Fall: nur ein Kind oder kein Kind
         if (sohn != nullptr) {
-            Knoten* ersatzKnoten;
+            Knoten<T>* ersatzKnoten;
             if (sohn->links == nullptr)
                 ersatzKnoten = sohn->rechts;
             else if (sohn->rechts == nullptr)
@@ -256,16 +270,16 @@ public:
             else {
                 // Zwei Kinder: FInde größtes Element im linken Teilbaum
                 ersatzKnoten = sohn;
-                char* tmp = (char*)findMax(sohn->links)->inhalt;
+                char* tmp = (char*)findMax(sohn->links)->inhalt.get();
                 deleteNode(tmp); // rekursiv löschen
-                ersatzKnoten->inhalt = tmp; // Wert ersetzen
+                ersatzKnoten->inhalt = std::shared_ptr<void>(tmp); // Wert ersetzen mit smart pointer
                 return true;
             }
 
             // Zeiger des Elternknotens anpassen
             if (vater == nullptr)
                 wurzel = ersatzKnoten;
-            else if (compareChars(x, vater->inhalt) < 0)
+            else if (compareChars(x, vater->inhalt.get()) < 0)
                 vater->links = ersatzKnoten;
             else
                 vater->rechts = ersatzKnoten;
@@ -282,56 +296,53 @@ public:
 /**************************** TreeTools.h *******************************/
 // Tools für Bäume (nur Gerüst, Methoden müssen noch implementiert werden)
 
+template <typename T>
 class TreeTools {
 public:
     // Berechnet die Höhe des Baums
-    static int treeHeight(Tree* b) {
+    static int treeHeight(Tree<T>* b) {
         if (b == nullptr || b->empty())
             return 0;
         return 1 + std::max(treeHeight(b->left()), treeHeight(b->right()));
     }
 
     // Zählt die Anzahl aller Knoten im Baum
-    static int anzahlKnoten(Tree* b) {
+    static int anzahlKnoten(Tree<T>* b) {
         if (b == nullptr || b->empty())
             return 0;
         return 1 + anzahlKnoten(b->left()) + anzahlKnoten(b->right());
     }
 
     // Gibt den Baum in Inorder-Notation mit Klammern aus
-    static void printTreeInorderWithParenthesis(Tree* b) {
+    static void printTreeInorderWithParenthesis(Tree<T>* b) {
         if (b == nullptr || b->empty())
             return;
 
         std::cout << "(";
         printTreeInorderWithParenthesis(b->left());
-        std::cout << " " << *(char*)b->value() << " ";
+        std::cout << " " << b->value() << " ";
         printTreeInorderWithParenthesis(b->right());
         std::cout << ")";
     }
     // Levelorder-Ausgabe (Breitensuche)
-    static void printTreeLevelorder(Tree* b) {
+    static void printTreeLevelorder(Tree<T>* b) {
         if (b == nullptr || b->empty())
             return;
 
-        std::queue<Tree*> q;
+        std::queue<Tree<T>*> q;
         q.push(b);
 
         while (!q.empty()) {
-            Tree* current = q.front();
+            Tree<T>* current = q.front();
         q.pop();
 
-
         if (current != nullptr && !current->empty()) {
-            std::cout << *(char*)current->value() << " ";
+            std::cout << current->value() << " ";
 
-            Tree* leftChild = current->left();
-            if (leftChild != nullptr && !leftChild->empty())
-                q.push(leftChild);
-
-            Tree* rightChild = current->right();
-            if (rightChild != nullptr && !rightChild->empty())
-                q.push(rightChild);
+            Tree<T>* l = current->left();
+            Tree<T>* r = current->right();
+            if (l && !l->empty()) q.push(l);
+            if (r && !r->empty()) q.push(r);
         }
         }
     }
@@ -342,7 +353,7 @@ public:
     }
 
     // Baum als Level-Ausgabe (grafisch)
-    static void printTree(Tree* b) {
+    static void printTree(Tree<T>* b) {
         int resthoehe = treeHeight(b);
         for (int i = 0; i < resthoehe; i++) {
             printLevel(b, i, spaces(resthoehe - i));
@@ -350,7 +361,7 @@ public:
         }
     }
 
-    static void printLevel(Tree* b, int level, int space) {
+    static void printLevel(Tree<T>* b, int level, int space) {
         if (level == 0) {
             for (int i = 0; i < space; ++i) std::cout << " ";
             if (b != nullptr) std::cout << b->value();
@@ -387,34 +398,34 @@ int main() {
     //    A   B
 
     // Blattknoten
-    LinkedTree* a = new LinkedTree(new char('A'));
-    LinkedTree* b = new LinkedTree(new char('B'));
+    LinkedTree<char>* a = new LinkedTree<char>('A');
+    LinkedTree<char>* b = new LinkedTree<char>('B');
 
     // Teilbaum * mit A und B
-    LinkedTree* m = new LinkedTree(a, new char('*'), b);
+    LinkedTree<char>* m = new LinkedTree<char>(a, '*', b);
 
     // linkwe Teilbaum: + mit F und +
-    LinkedTree* f = new LinkedTree(new char('F'));
-    LinkedTree* p = new LinkedTree(f, new char('+'), m);
+    LinkedTree<char>* f = new LinkedTree<char>('F');
+    LinkedTree<char>* p = new LinkedTree<char>(f, '+', m);
 
     // rechter Teilbaum: - mit X und Y
-    LinkedTree* x = new LinkedTree(new char('X'));
-    LinkedTree* y = new LinkedTree(new char('Y'));
-    LinkedTree* n = new LinkedTree(x, new char('-'), y);
+    LinkedTree<char>* x = new LinkedTree<char>('X');
+    LinkedTree<char>* y = new LinkedTree<char>('Y');
+    LinkedTree<char>* n = new LinkedTree<char>(x, '-', y);
 
     // Wurzelbaum mit /
-    LinkedTree* d = new LinkedTree(p, new char('/'), n);
+    LinkedTree<char>* d = new LinkedTree<char>(p, '/', n);
 
     std::cout << "Baumstruktur (Inorder mit Klammern):" << std::endl;
-    TreeTools::printTreeInorderWithParenthesis(d);
+    TreeTools<char>::printTreeInorderWithParenthesis(d);
     std::cout << std::endl << std::endl;
 
     std::cout << "Baumstruktur (Levelorder):" << std::endl;
-    TreeTools::printTreeLevelorder(d);
+    TreeTools<char>::printTreeLevelorder(d);
     std::cout << std::endl;
 
-    std::cout << "Baumhöhe: " << TreeTools::treeHeight(d) << std::endl;
-    std::cout << "Anzahl der Knoten: " << TreeTools::anzahlKnoten(d) << std::endl;
+    std::cout << "Baumhöhe: " << TreeTools<char>::treeHeight(d) << std::endl;
+    std::cout << "Anzahl der Knoten: " << TreeTools<char>::anzahlKnoten(d) << std::endl;
 
     return 0;
 }
