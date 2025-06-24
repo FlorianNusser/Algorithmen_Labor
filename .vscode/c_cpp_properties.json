@@ -6,8 +6,8 @@
         "${workspaceFolder}/**"
       ],
       "compilerPath": "clang",
-      "cStandard": "c++17",
-      "cppStandard": "c++17",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
       "intelliSenseMode": "windows-clang-x64",
       "compilerArgs": [
         ""

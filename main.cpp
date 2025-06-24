@@ -3,6 +3,9 @@
 #include <stdexcept>
 #include <queue>
 #include <memory>
+#include <random>
+#include <iomanip>
+#include <cmath>
 
 /******************************* Element.h ********************************/
 // Element für LinkedQueue und LinkedStack
@@ -451,6 +454,27 @@ public:
     }
 };
 
+
+
+//Shuffled Search Tree Funktion zur Erstellung zufälliger Suchbäume
+
+
+SearchTree<int> generateShuffledSearchTree(int knots)
+{
+    SearchTree<int> randomTree;
+    std::random_device device;
+    std::mt19937 generator(device());
+    std::uniform_int_distribution<int> distribution(1, knots);
+
+    for (int i = 0; i < knots; ++i)
+    {
+        int treevariable = distribution(generator);
+        randomTree.insert(treevariable);
+    }
+
+    return randomTree;
+}
+
 // Hier beginnt Tree Tools Test, bzw die Main Datei
 
 /******************************  TreeToolsTest.cpp  **************************/
@@ -507,7 +531,28 @@ int main()
     }
     std::cout << std::endl;
 
-    delete[] sorted; 
+    delete[] sorted;
+
+
+    //Aufgabe b)
+    int knots, runs, totalHeight = 0;
+    double averageHeight, logarithmus;
+    std::cout << "Aufgabe b)\n" << std::endl;
+    std::cout << "Anzahl an Knoten: ";
+    std::cin >> knots;
+    std::cout << "\nAnzahl der Durchläufe: ";
+    std::cin >> runs;
+
+for (int i = 0; i < runs; i++)
+{
+    SearchTree<int> randomTree = generateShuffledSearchTree(knots);
+    int height = TreeTools<int>::treeHeight(&randomTree);
+    std::cout << "Höhe Suchbaum " << i+1 << ": " << height << std::endl;
+    totalHeight += height;
+}
+    averageHeight = totalHeight/runs;
+    logarithmus = std::log(averageHeight) / std::log(2);
+    std::cout << "Durchschnittliche Höhe: " << averageHeight << " (entspricht " << std::setprecision(2) << logarithmus << " * log₂ n)" << std::endl;
 
     return 0;
 }

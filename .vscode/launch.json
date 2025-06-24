@@ -3,11 +3,13 @@
   "configurations": [
     {
       "name": "C/C++ Runner: Debug Session",
-      "type": "lldb",
+      "type": "cppvsdbg",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/paulinabayha/Desktop/Semester 2/Algorithmen und Komplexität/Labor/Algorithmen_Labor",
-      "program": "/Users/paulinabayha/Desktop/Semester 2/Algorithmen und Komplexität/Labor/Algorithmen_Labor/build/Debug/outDebug"
+      "stopAtEntry": false,
+      "console": "externalTerminal",
+      "cwd": "c:/Users/flori/Flori_Studium/2_Semester/Algorithmen_und_Komplexität/Algorithmen_Labor_Git/Algorithmen_Labor",
+      "program": "c:/Users/flori/Flori_Studium/2_Semester/Algorithmen_und_Komplexität/Algorithmen_Labor_Git/Algorithmen_Labor/build/Debug/outDebug"
     }
   ]
 }
